@@ -29,6 +29,9 @@ Now you are ready to use the telegraph key!
 2. In 2 seconds, press the User Button one time to enter a dot; three times to enter a dash; don't press the User Button to send encoded symbol to the computer.
 
 For example, try to enter the following:
+
 dash dot dot
+
 dot dot dot
+
 dot dash dot
