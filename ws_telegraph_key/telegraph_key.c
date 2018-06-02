@@ -57,9 +57,9 @@ static void init_button(void)
 {
     nvic_enable_irq(NVIC_EXTI0_IRQ);
 
-    gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPIO0);
+    gpio_mode_setup(GPIOE, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPIO0);
 
-    exti_select_source(EXTI0, GPIOA);
+    exti_select_source(EXTI0, GPIOE);
     exti_set_trigger(EXTI0, EXTI_TRIGGER_FALLING);
     exti_enable_request(EXTI0);
 }
