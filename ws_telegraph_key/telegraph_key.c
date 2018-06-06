@@ -1,8 +1,15 @@
 #include "telegraph_key.h"
 
+/*! Delay between sending USB Key Code and Release all keys signal */
 #define USB_DELAY 150
+
+/*! Delay for button debounce */
 #define DEBOUNCE_DELAY 200
+
+/*! Prescaler for the TIM2 timer */
 #define TIM2_PRESCALER 8400
+
+/*! Period for the TIM2 timer */
 #define TIM2_PERIOD 20000
 
 static void init_clock(void);
@@ -13,10 +20,18 @@ static void init_tim2(void);
 void turn_on_leds_when_device_connected(void);
 void turn_off_leds_when_device_not_connected(void);
 
+/*! Count of pressing of the button */
 volatile uint8_t count_of_pressing;
+
+/*! Delay counter for debounce */
 volatile uint16_t button_delay;
+
+/*! Current symbol entered by user */
 morse_symbol_t current_symbol;
 
+/*!
+  Entry point.
+*/
 int main(void)
 {
     count_of_pressing = 0;
@@ -35,6 +50,9 @@ int main(void)
     return 0;
 }
 
+/*!
+  Initializes clocks.
+*/
 static void init_clock(void)
 {
     rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
@@ -53,6 +71,9 @@ static void init_clock(void)
 
 }
 
+/*!
+  Initializes a user button.
+*/
 static void init_button(void)
 {
     nvic_enable_irq(NVIC_EXTI0_IRQ);
@@ -64,12 +85,18 @@ static void init_button(void)
     exti_enable_request(EXTI0);
 }
 
+/*!
+  Initializes leds on the board.
+*/
 static void init_leds(void)
 {
     gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12 | GPIO13 | GPIO14 | GPIO15);
     gpio_set(GPIOD, GPIO15);
 }
 
+/*!
+  Initializes the TIM2 timer.
+*/
 static void init_tim2(void)
 {
     rcc_periph_reset_pulse(RST_TIM2);
@@ -83,6 +110,9 @@ static void init_tim2(void)
     timer_enable_counter(TIM2);
 }
 
+/*!
+  Handles the TIM2 timer interrupt.
+*/
 void tim2_isr(void)
 {
     if (timer_get_flag(TIM2, TIM_SR_UIF))
@@ -120,12 +150,18 @@ void tim2_isr(void)
     }
 }
 
+/*!
+  Turns on the leds on the board when the device is plugged.
+*/
 void turn_on_leds_when_device_connected(void)
 {
     gpio_set(GPIOD, LED_GREEN);
     gpio_clear(GPIOD, LED_RED);
 }
 
+/*!
+  Turns off the leds on the board when the device is unplugged.
+*/
 void turn_off_leds_when_device_not_connected(void)
 {
     gpio_set(GPIOD, LED_RED);
@@ -134,6 +170,9 @@ void turn_off_leds_when_device_not_connected(void)
     gpio_clear(GPIOD, LED_ORANGE);
 }
 
+/*!
+  Handles the EXTI0 interrupt when the user button is pressed.
+*/
 void exti0_isr(void)
 {
     if (exti_get_flag_status(EXTI0))
@@ -147,6 +186,9 @@ void exti0_isr(void)
     exti_reset_request(EXTI0);
 }
 
+/*!
+  Handles the SysTick Timer interrupt.
+*/
 void sys_tick_handler(void)
 {
     button_delay++;

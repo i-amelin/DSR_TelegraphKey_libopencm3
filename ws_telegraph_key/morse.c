@@ -1,5 +1,8 @@
 #include "morse.h"
 
+/*!
+  USB Key Code for each letter and digit, and mask of dots and dashes sequence.
+*/
 static const morse_symbol_t symbols[] =
 {
     { 0x04, 0b00000101 }, // A
